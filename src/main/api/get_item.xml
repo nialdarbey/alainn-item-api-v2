@@ -1,0 +1,47 @@
+<ns:getItemResponse xmlns:ns="http://www.alainn.com/SOA/message/1.0" xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+   <ns1:Item>
+      <id>?</id>
+      <type>?</type>
+      <name>?</name>
+      <summary>?</summary>
+      <brand>?</brand>
+      <images>
+         <image type="?">?</image>
+         <image type="?">?</image>
+         <image type="?">?</image>
+      </images>
+      <description>?</description>
+   </ns1:Item>
+   <ns1:ItemSku>
+      <id>?</id>
+      <type>?</type>
+      <name>?</name>
+      <summary>?</summary>
+      <brand>?</brand>
+      <images>
+         <image type="?">?</image>
+      </images>
+      <sku>?</sku>
+      <price>?</price>
+      <quantityInStock>?</quantityInStock>
+      <characteristics>
+         <characteristic name="?">?</characteristic>
+      </characteristics>
+   </ns1:ItemSku>
+   <ns1:ItemSku>
+      <id>?</id>
+      <type>?</type>
+      <name>?</name>
+      <summary>?</summary>
+      <brand>?</brand>
+      <images>
+         <image type="?">?</image>
+      </images>
+      <sku>?</sku>
+      <price>?</price>
+      <quantityInStock>?</quantityInStock>
+      <characteristics>
+         <characteristic name="?">?</characteristic>
+      </characteristics>
+   </ns1:ItemSku>
+</ns:getItemResponse>

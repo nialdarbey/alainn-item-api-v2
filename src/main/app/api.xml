@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:secure-property-placeholder="http://www.mulesoft.org/schema/mule/secure-property-placeholder" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd" version="EE-3.7.0">
+    <db:mysql-config name="MySQL_Configuration" host="${db.host}" port="3306" user="${db.user}" password="${db.password}" database="alainn" doc:name="MySQL Configuration"/>
+    <secure-property-placeholder:config name="Secure_Property_Placeholder" key="${vault.key}" location="config.${env}.properties" doc:name="Secure Property Placeholder"/>
+    <http:listener-config name="api-httpListenerConfig" protocol="HTTPS" host="0.0.0.0" port="8082" doc:name="HTTP Listener Configuration">
+        <tls:context>
+            <tls:key-store type="jks" path="keystore.jks" keyPassword="changeit" password="changeit" alias="server-alias"/>
+        </tls:context>
+    </http:listener-config>
+	<apikit:config name="api-config" raml="api.raml" consoleEnabled="true" consolePath="console" doc:name="Router"/>
+    <flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="/item/api"/>
+        <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
+        <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="get:/items:api-config">
+        <db:select config-ref="MySQL_Configuration" doc:name="select items">
+            <db:dynamic-query><![CDATA[select i.item_id, i.item_name, i.item_summary, i.item_description, i.item_brand, 	
+						it.item_type_name, im.url, imt.image_type_name 
+						from item i, item_type it, image im, image_type imt
+						where i.item_type_id = it.id
+						and im.item_id = i.item_id
+						and im.image_type_id = imt.id
+						and i.item_name like '#[n = message.inboundProperties['http.query.params']['name']; n == null ? '%' : n + '%']'
+					    and i.item_brand like '#[n = message.inboundProperties['http.query.params']['brand']; n == null ? '%' : n + '%']'
+					    and it.item_type_name like '#[n = message.inboundProperties['http.query.params']['type']; n == null ? '%' : n + '%']' 
+					    and imt.image_type_name in ('#[n = message.inboundProperties['http.query.params']['imageType']; n == null ? 'LargeImage' : n.replaceAll(",", "','")]') 
+					    order by item_id
+					    limit #[Integer.valueOf(message.inboundProperties['http.query.params']['pageIndex'])], 
+					    #[Integer.valueOf(message.inboundProperties['http.query.params']['pageSize'] * message.inboundProperties['http.query.params']['imageType'].split(',').length)]]]></db:dynamic-query>
+        </db:select>
+        <dw:transform-message doc:name="to Xml">
+            <dw:input-payload doc:sample="list_map_1.dwl"/>
+                    <dw:set-payload><![CDATA[%dw 1.0
+%namespace mes http://www.alainn.com/SOA/message/1.0
+%namespace mod http://www.alainn.com/SOA/model/1.0
+%output application/xml 
+---
+mes#getItemsResponse: {
+  mes#PageInfo: {
+    pageIndex: inboundProperties['http.query.params']['pageIndex'],
+    pageSize: sizeOf payload groupBy $.item_id 
+  },
+  (payload groupBy $.item_id map {
+    mod#Item: {
+      id: $[0].item_id,
+      type: $[0].item_type_name,
+      name: $[0].item_name,
+      summary: $[0].item_summary,
+      brand: $[0].item_brand,
+      images: {
+        ($ map {
+          image@(type:$.image_type_name): $.url
+        })
+      }
+    }
+  })
+}]]></dw:set-payload>
+            <dw:set-variable variableName="simpleNumber"><![CDATA[%dw 1.0
+%output application/java
+---
+512234324]]></dw:set-variable>
+            <dw:set-variable variableName="simpleString"><![CDATA[%dw 1.0
+%output application/java
+---
+'Hello world, how are you?']]></dw:set-variable>
+            <dw:set-variable variableName="simpleBoolean"><![CDATA[%dw 1.0
+%output application/java
+---
+true]]></dw:set-variable>
+            <dw:set-variable variableName="object"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	name: 'Paula',
+	name: 'Katie',
+	address: {
+		city: 'SF',
+		country: 'US'
+	},
+	hobbies: ['Swimming', 'Running']
+}]]></dw:set-variable>
+            <dw:set-variable variableName="arrays"><![CDATA[%dw 1.0
+%output application/java
+---
+[1,2,3]]]></dw:set-variable>
+            <dw:set-variable variableName="compound"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	name: 'Paula ' ++ 'Maguire',
+	address: {
+		city: 'SF',
+		country: 'US',
+		item: payload[0].item_name
+	}
+}]]></dw:set-variable>
+                </dw:transform-message>
+    </flow>
+    <flow name="get:/items/{itemId}:api-config">
+        <db:select config-ref="MySQL_Configuration" doc:name="select item">
+            <db:dynamic-query><![CDATA[select i.item_id, it.item_type_name, i.item_name, i.item_brand, i.item_description, 
+						si.sku_id, si.sku_name, si.sku_summary, si.price, si.stock_quantity, 
+						im.url, imt.image_type_name 
+						from item i, item_type it, sku_item si, image im, image_type imt 
+						where i.item_type_id = it.id
+						and si.item_id = i.item_id
+						and si.sku_id = im.item_sku_id
+						and im.image_type_id = imt.id
+						and i.item_id = '#[itemId]' 
+						and si.item_id = i.item_id
+						and imt.image_type_name in ('#[message.inboundProperties['http.query.params']['imageType'].replaceAll(",", "','")]')]]></db:dynamic-query>
+        </db:select>
+        <dw:transform-message doc:name="to Xml">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  items: payload.getItemsResponse.*Item map {
+    id: $.id,
+    name: $.name,
+    (summary: $.summary) when $.summary?,
+    brand: $.brand,
+    images: $.images.*image filter $.@type == 'SmallImage' or $.@type == 'LargeImage' map {
+      type: $.@type,
+      url: $
+    }
+  }
+}]]></dw:set-payload>
+                </dw:transform-message>
+    </flow>
+    <apikit:mapping-exception-strategy name="api-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+    </apikit:mapping-exception-strategy>
+</mule>

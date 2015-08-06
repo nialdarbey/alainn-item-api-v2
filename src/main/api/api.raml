@@ -1,0 +1,24 @@
+#%RAML 0.8
+---
+title: Álainn Cosmetics Item API
+version: v1
+baseUri: https://alainn-item-api.cloudhub.io/{version}
+
+traits: !include traits.raml
+/items:
+  description: List of all items on sale
+  get:
+    is: [searchable, imageable, pageable]
+    responses:
+      200:
+        body:
+          application/xml:
+            example: !include get_items.xml
+  /{itemId}:
+    get:
+      is: [imageable]
+      responses:
+        200:
+          body:
+            application/xml: 
+              example: !include get_item.xml
