@@ -1,7 +1,7 @@
 #%RAML 0.8
 ---
-title: Álainn Cosmetics Item API
-version: v1
+title: Álainn Cosmetics Item  API
+version: v2
 baseUri: https://alainn-item-api.cloudhub.io/{version}
 
 traits: !include traits.raml
@@ -22,3 +22,28 @@ traits: !include traits.raml
           body:
             application/xml: 
               example: !include get_item.xml
+    /stock-count:
+      put:
+        body:
+          application/xml:
+            example: !include put_item_stock_count.xml
+/brands:
+  description: List of brands
+  get:
+    is: [pageable]
+    responses:
+      200:
+        body:
+          application/xml:
+            example: !include get_brands.xml
+/types:
+  description: List of Item types
+  get:
+    is: [pageable]
+    responses:
+      200:
+        body:
+          application/xml:
+            example: !include get_types.xml
+                            
+              

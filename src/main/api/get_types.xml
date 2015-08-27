@@ -1,0 +1,10 @@
+<ns:getTypesResponse xmlns:ns="http://www.alainn.com/SOA/message/1.0" xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+   <ns:PageInfo>
+      <pageIndex>0</pageIndex>
+      <pageSize>10</pageSize>
+   </ns:PageInfo>
+   <!--1 or more repetitions:-->
+   <ns1:Type>Bubble Bath</ns1:Type>
+   <ns1:Type>Essential Oils</ns1:Type>
+   <ns1:Type>Cologne</ns1:Type>
+</ns:getTypesResponse>

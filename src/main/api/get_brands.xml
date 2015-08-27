@@ -1,0 +1,10 @@
+<ns:getBrandsResponse xmlns:ns="http://www.alainn.com/SOA/message/1.0" xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+   <ns:PageInfo>
+      <pageIndex>0</pageIndex>
+      <pageSize>10</pageSize>
+   </ns:PageInfo>
+   <!--1 or more repetitions:-->
+   <ns1:Brand>Jerome Russell</ns1:Brand>
+   <ns1:Brand>Now Foods</ns1:Brand>
+   <ns1:Brand>Wella</ns1:Brand>
+</ns:getBrandsResponse>

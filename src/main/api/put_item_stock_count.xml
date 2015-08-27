@@ -1,0 +1,26 @@
+<ns:modifySKUStockCount xmlns:ns="http://www.alainn.com/SOA/message/1.0" xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+   <!--1 or more repetitions:-->
+   <ns1:TransactedSku>
+      <id>?</id>
+      <type>?</type>
+      <name>?</name>
+      <summary>?</summary>
+      <brand>?</brand>
+      <!--Optional:-->
+      <images>
+         <!--1 or more repetitions:-->
+         <image type="?">?</image>
+      </images>
+      <sku>?</sku>
+      <!--Optional:-->
+      <price>?</price>
+      <!--Optional:-->
+      <quantityInStock>?</quantityInStock>
+      <!--Optional:-->
+      <characteristics>
+         <!--1 or more repetitions:-->
+         <characteristic name="?">?</characteristic>
+      </characteristics>
+      <transactionQuantity>?</transactionQuantity>
+   </ns1:TransactedSku>
+</ns:modifySKUStockCount>

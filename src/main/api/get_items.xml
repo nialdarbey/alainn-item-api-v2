@@ -1,29 +1,28 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<mes:getItemsResponse xmlns:mes="http://www.alainn.com/SOA/message/1.0">
-    <mes:PageInfo>
-        <pageIndex>0</pageIndex>
-        <pageSize>4</pageSize>
-    </mes:PageInfo>
-    <mod:Item xmlns:mod="http://www.alainn.com/SOA/model/1.0">
-        <id>B00014WW38</id>
-        <type>Chemical Hair Dyes</type>
-        <name>Naturtint - Permanent Hair Colorant</name>
-        <summary>Naturtint 1n Black Ebony Hair Color (1xKit)</summary>
-        <brand>Naturtint</brand>
-        <images>
-            <image type="MediumImage">http://ecx.images-amazon.com/images/I/51DLz71-k1L._SL160_.jpg</image>
-        </images>
-    </mod:Item>
-    <mod:Item xmlns:mod="http://www.alainn.com/SOA/model/1.0">
-        <id>B0000YUWXG</id>
-        <type>Chemical Hair Dyes</type>
-        <name>Jerome Russell's Hair Color Thickener for Thinning Hair</name>
-        <summary>Effectively cover up light to medium bald spots.</summary>
-        <brand>Jerome Russell</brand>
-        <images>
-            <image type="MediumImage">http://ecx.images-amazon.com/images/I/516dJDxYU4L._SL160_.jpg</image>
-            <image type="LargeImage">http://ecx.images-amazon.com/images/I/516dJDxYU4L.jpg</image>
-            <image type="SmallImage">http://ecx.images-amazon.com/images/I/516dJDxYU4L._SL75_.jpg</image>
-        </images>
-    </mod:Item>
-</mes:getItemsResponse>
+<ns0:getItemsResponse xmlns:ns0="http://www.alainn.com/SOA/message/1.0">
+   <ns0:PageInfo>
+      <pageIndex>0</pageIndex>
+      <pageSize>2</pageSize>
+   </ns0:PageInfo>
+   <ns1:Item xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+      <id>B0000YUWXG</id>
+      <type>Chemical Hair Dyes</type>
+      <name>Jerome Russell's Hair Color Thickener for Thinning Hair</name>
+      <summary>Effectively cover up light to medium bald spots.</summary>
+      <brand>Jerome Russell</brand>
+      <images>
+         <image type="SmallImage">http://ecx.images-amazon.com/images/I/516dJDxYU4L._SL75_.jpg</image>
+         <image type="LargeImage">http://ecx.images-amazon.com/images/I/516dJDxYU4L.jpg</image>
+      </images>
+   </ns1:Item>
+   <ns1:Item xmlns:ns1="http://www.alainn.com/SOA/model/1.0">
+      <id>B00014WW38</id>
+      <type>Chemical Hair Dyes</type>
+      <name>Naturtint - Permanent Hair Colorant</name>
+      <summary>Naturtint 1n Black Ebony Hair Color (1xKit)</summary>
+      <brand>Naturtint</brand>
+      <images>
+         <image type="SmallImage">http://ecx.images-amazon.com/images/I/51DLz71-k1L._SL75_.jpg</image>
+         <image type="LargeImage">http://ecx.images-amazon.com/images/I/51DLz71-k1L.jpg</image>
+      </images>
+   </ns1:Item>
+</ns0:getItemsResponse>
